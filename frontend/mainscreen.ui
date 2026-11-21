@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry"><rect><x>0</x><y>0</y><width>1000</width><height>650</height></rect></property>
+  <property name="windowTitle"><string>ArmySchmarmy</string></property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="mainLayout">
+    <item><widget class="QWidget" name="chatPanel" native="true">
+     <layout class="QVBoxLayout" name="chatLayout">
+      <item><widget class="QLabel" name="chatHeading"><property name="text"><string>Army assistant</string></property></widget></item>
+      <item><widget class="QTextEdit" name="chatHistory"><property name="readOnly"><bool>true</bool></property><property name="placeholderText"><string>Chat messages will appear here.</string></property></widget></item>
+      <item><layout class="QHBoxLayout" name="messageLayout">
+       <item><widget class="QLineEdit" name="messageInput"><property name="placeholderText"><string>Describe your army...</string></property></widget></item>
+       <item><widget class="QPushButton" name="sendButton"><property name="text"><string>Send</string></property></widget></item>
+      </layout></item>
+     </layout>
+    </widget></item>
+    <item><widget class="QWidget" name="armyPanel" native="true">
+     <layout class="QVBoxLayout" name="armyLayout">
+      <item><widget class="QLabel" name="armyHeading"><property name="text"><string>Army workspace</string></property></widget></item>
+      <item><widget class="QGraphicsView" name="armyView"/></item>
+      <item><widget class="QLabel" name="workspaceHint"><property name="text"><string>Model placement will go here.</string></property></widget></item>
+      <item><widget class="QPushButton" name="addUnitButton"><property name="text"><string>Add unit</string></property></widget></item>
+      <item><widget class="QLabel" name="totalsLabel"><property name="text"><string>Points: 0    Cost: $0.00</string></property></widget></item>
+     </layout>
+    </widget></item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
