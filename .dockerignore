@@ -1,0 +1,6 @@
+.git
+.idea
+desktop
+**/.venv
+**/__pycache__
+.env

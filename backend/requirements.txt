@@ -1,0 +1,5 @@
+fastapi==0.165.0
+uvicorn[standard]==0.54.0
+nicegui==4.1.0
+sentence-transformers==6.3.0
+sqlite-vec==0.1.9
