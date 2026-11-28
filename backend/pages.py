@@ -43,12 +43,6 @@ BUILD_BUTTON_CSS = """
 """
 
 
-def disable_with_opacity(button):
-    """Disable a button without fading its appearance."""
-    button.disable()
-    button.style("opacity: 1 !important")
-
-
 def set_button_red(button):
     """Override NiceGUI's default button color."""
     button.style('background-color: #420D09 !important; color: white !important')
@@ -79,8 +73,7 @@ def index():
             panel.classes(remove="locked")
         for control in (message_input, send_button, add_unit_button):
             control.enable()
-
-        disable_with_opacity(build_button)
+        build_button.visible = False
         status("Ready to build your army.")
 
     @ui.refreshable
@@ -96,7 +89,25 @@ def index():
                     .props("flat dense round size=sm")
         totals_label.text = f"{army.format_name}  Points: {army.total_points}/{army.points_limit}"
 
+    def unit_options(faction):
+        return {unit.id: f"{unit.name} ({unit.points} pts)"
+                for unit in sorted(CATALOG.values(), key=lambda unit: unit.name) if unit.faction == faction}
+
+    def change_faction(event):
+        unit_select.set_options(unit_options(event.value), value=None)
+        unit_select.set_enabled(event.value is not None)
+
+    def open_add_unit_dialog():
+        # an army is one faction, so once it has units the faction is fixed
+        faction_select.set_value(army.faction or faction_select.value)
+        faction_select.set_enabled(army.faction is None)
+        unit_select.set_value(None)
+        add_unit_dialog.open()
+
     def add_unit():
+        if not unit_select.value:
+            status("Pick a faction and a unit first.")
+            return
         try:
             army.add_unit(unit_select.value, int(count_input.value or 1))
         except ValueError as error:
@@ -141,7 +152,7 @@ def index():
             points_toggle = ui.toggle({points: f"{points} ({name})" for points, name in POINTS_FORMATS.items()},
                                       value=army.points_limit, on_change=change_points_limit)
             army_area = ui.column().classes("panel-content border p-2")
-            add_unit_button = ui.button("Add unit", on_click=lambda: add_unit_dialog.open())
+            add_unit_button = ui.button("Add unit", on_click=open_add_unit_dialog)
             set_button_red(add_unit_button)
             add_unit_button.disable()
             totals_label = ui.label().style("white-space: pre")
@@ -151,9 +162,10 @@ def index():
 
     with ui.dialog() as add_unit_dialog, ui.card().classes("min-w-[320px]"):
         ui.label("Add unit").classes("text-lg")
-        unit_select = ui.select({unit.id: f"{unit.name} ({unit.faction}, {unit.points} pts)"
-                                 for unit in CATALOG.values()},
-                                label="Unit", with_input=True).classes("w-full")
+        faction_select = ui.select(sorted({unit.faction for unit in CATALOG.values()}),
+                                   label="Faction", on_change=change_faction).classes("w-full")
+        unit_select = ui.select({}, label="Unit", with_input=True).classes("w-full")
+        unit_select.disable()
         count_input = ui.number("Copies", value=1, min=1, max=6, precision=0).classes("w-full")
         with ui.row().classes("w-full justify-end"):
             ui.button("Cancel", on_click=add_unit_dialog.close).props("flat")
